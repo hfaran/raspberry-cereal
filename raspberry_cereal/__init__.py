@@ -8,7 +8,7 @@ import time
 from ConfigParser import ConfigParser
 
 from raspberry_cereal.custom_device import CustomDevice
-from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_reg
+from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_regs
 from raspberry_cereal.constants import CONFIG_PATH
 
 def main():
@@ -36,7 +36,7 @@ def main():
         )
     # Poll every POLL_TIME seconds. About 1.6ms per poll for 8 keys
     while(True):
-        serial_input = read_shift_reg(sr_config)
+        serial_input = read_shift_regs(sr_config)
         for bit in enumerate(serial_input):
             if bit[1]:
                 device.emit_click(

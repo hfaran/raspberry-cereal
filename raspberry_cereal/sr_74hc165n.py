@@ -25,9 +25,10 @@ def gpio_setup():
         )
     sr_config['bus_width'] = int(config.get('RASPBERRY_CEREAL', 'bus_width'))
     sr_config['shift_registers'] = int(config.get(
-            'RASPBERRY_CEREAL'),
+            'RASPBERRY_CEREAL',
             'shift_registers'
-        )
+        )      
+    )
 
     GPIO.setmode(eval(config.get('GPIO', 'setmode')))
     GPIO.setwarnings(eval(config.get('GPIO', 'setwarnings')))
