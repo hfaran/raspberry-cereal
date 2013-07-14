@@ -10,4 +10,3 @@ class CustomDevice(uinput.Device):
     """Emits a press and a depress"""
     self.emit(key, 1)
     self.emit(key, 0)
-    
