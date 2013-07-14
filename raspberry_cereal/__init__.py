@@ -10,10 +10,13 @@ from ConfigParser import ConfigParser
 from raspberry_cereal.custom_device import CustomDevice
 from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_regs
 from raspberry_cereal.constants import CONFIG_PATH
+from raspberry_cereal.validate_cfg import main as validate_config
 
 def main():
     """Polls shift register for serial data and emit_clicks HIGHs"""
     print "[WAIT] Setting up..."
+    # Validate config
+    validate_config()
     # Read config file
     config = ConfigParser()
     config.read(CONFIG_PATH)
@@ -23,6 +26,7 @@ def main():
     for key in config.options('KEY2BIT_MAP'):
         events.append(eval("uinput.{}".format(key.upper())))
     device = CustomDevice(events)
+    print "[OK] Config validated; looks good."
     # Setup GPIO, create inverse pin/key dict
     sr_config = gpio_setup()
     bit2key_map = {config.get('KEY2BIT_MAP', option):option for option in config.options('KEY2BIT_MAP')}
