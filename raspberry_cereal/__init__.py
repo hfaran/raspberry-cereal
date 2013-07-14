@@ -32,7 +32,8 @@ def main():
                 "raspberry-cereal",
                 "'sudo raspberry-cereal &",
                 int(POLL_TIME*1000)
-    )
+            )
+        )
     # Poll every POLL_TIME seconds. About 1.6ms per poll for 8 keys
     while(True):
         serial_input = read_shift_reg(sr_config)
