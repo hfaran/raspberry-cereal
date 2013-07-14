@@ -29,8 +29,10 @@ def main():
         serial_input = read_shift_reg(sr_config)
         for bit in enumerate(serial_input):
             if bit[1]:
-                device.emit_click(eval("uinput.{}".format(
-                            bit2key_map[str(bit[0])].upper()
+                device.emit_click(
+                        eval(
+                            "uinput.{}".format(
+                                bit2key_map[str(bit[0])].upper()
                         )
                     )
                 )
