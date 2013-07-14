@@ -16,8 +16,8 @@ def gpio_setup():
     sr_config['datapin'] = int(config.get('74HC165N', 'datapin'))
     sr_config['clockpin'] = int(config.get('74HC165N', 'clockpin'))
     sr_config['triggerpulsewidth'] = eval(
-            config.get('74HC165N'),
-            'triggerpulsewidth'
+            config.get('74HC165N',
+            'triggerpulsewidth')
         )
 
     GPIO.setmode(eval(config.get('GPIO', 'setmode')))
