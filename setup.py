@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = "raspberry-cereal",
-    version = '0.1',
+    version = '0.2',
     author = 'Hamza Faran',
     author_email = 'hamza@hfaran.com',
     description = ('A dash of RPi.GPIO and a'
