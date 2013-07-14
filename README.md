@@ -41,7 +41,7 @@ If you need to know what keys are called: http://lxr.free-electrons.com/source/i
 
 The example config file contains documentation that indicates the datatypes of each field, as well as details of what each section does. Type rules MUST be followed, otherwise your config file will be very broken.
 
-What will determine how expensive raspberry-cereal at execution is depends largely on the poll_time you set. Keep in mind that a poll takes ~1.6ms of processor time so it's recommended to keep polling at around 20ms to keep resources clear for other things.
+What will determine how expensive raspberry-cereal at execution is depends largely on the poll_time you set. Keep in mind that a poll takes ~1.6ms of processor time so it's recommended to keep polling at around 20ms to keep resources clear for other things. Each shift register added will linearly increase CPU time as well. (If only there was a way to do this with interrupts.)
 
 	$ sudo vim /etc/raspberry_cereal.cfg # config as necessary
 
