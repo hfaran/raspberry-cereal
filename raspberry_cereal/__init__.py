@@ -34,7 +34,7 @@ def main():
            " {0} will continue to run in the background. Remember to kill"
            " the job when you are done. Polling every {2} ms.".format(
                 "raspberry-cereal",
-                "'sudo raspberry-cereal &",
+                "'sudo raspberry-cereal &'",
                 int(POLL_TIME*1000)
             )
         )

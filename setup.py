@@ -8,8 +8,8 @@ if os.path.exists(CONFIG_PATH):
     moved = False
     i = 0
     while not moved:
-        if not os.path.exists(os.path.join(CONFIG_PATH, '.bak'+str(i)))
-            shutil.move(CONFIG_PATH, os.path.join(CONFIG_PATH, '.bak'+str(i)))
+        if not os.path.exists(CONFIG_PATH+'.bak'+str(i)):
+            shutil.move(CONFIG_PATH, CONFIG_PATH+'.bak'+str(i))
             moved = True
         else:
             i += 1
