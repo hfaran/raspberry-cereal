@@ -1,10 +1,15 @@
+"""raspberry_cereal takes serial input from a shift register
+and maps it to any device input you want possible with uinput. Read the
+README for details!
+"""
+
 import uinput
 from ConfigParser import ConfigParser
 import time
 
 from raspberry_cereal.custom_device import CustomDevice
 from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_reg
-from raspberry_cereal.constants import CONFIG_PATH, POLL_TIME
+from raspberry_cereal.constants import CONFIG_PATH
 
 def main():
     start = time.time()
@@ -12,6 +17,7 @@ def main():
     # Read config file
     config = ConfigParser()
     config.read(CONFIG_PATH)
+    POLL_TIME = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
     # Create device
     events = []
     for key in config.options('KEY2BIT_MAP'):
