@@ -1,3 +1,7 @@
+"""This module was written specifically with the 74HC165 in mind, but can
+probably be modified to suit any PISO shift register.
+"""
+
 import RPi.GPIO as GPIO
 from ConfigParser import ConfigParser
 from raspberry_cereal.constants import CONFIG_PATH

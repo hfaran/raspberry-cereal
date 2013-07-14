@@ -18,7 +18,7 @@ The following commands should take you to victory!
 
 	$ ```sudo apt-get install lidudev-dev```
 
-- 4) And finally, we run setup :)
+- 4) And finally, we run setup :) [IMPORTANT: setup.py will overwrite your existing config file, if you have one, so make sure to backup.]
 
 	$ ```sudo python setup.py install```
 
@@ -36,6 +36,7 @@ Usage
 -----
 First, you should install it (see above). Then configure it.
 The config file is located at /etc/raspberry_cereal.cfg. You're going to want to specify the three pin locations of your 74HC165 (you can use any shift register but you're going to need to modify/extend the functionality to fit your shift register) and then specify which keys you want mapped to which parallel input pin of your shift register.
+If you need to know what keys are called: http://lxr.free-electrons.com/source/include/linux/input.h?v=2.6.38
 
 	$ sudo vim /etc/raspberry_cereal.cfg # config as necessary
 
