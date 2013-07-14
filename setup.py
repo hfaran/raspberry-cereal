@@ -1,4 +1,5 @@
 from setuptools import setup
+from raspberry_cereal.constants import CONFIG_PATH
 
 setup(
     name = "raspberry-cereal",
@@ -13,5 +14,9 @@ setup(
     install_requires = [
         'RPi.GPIO',
         'python-uinput'
-    ]
+    ],
+    data_files = [(CONFIG_PATH, ['config/raspberry_cereal.cfg'])],
+    entry_points = {
+        'raspberry_cereal': ['raspberry_cereal = rasp_cereal:main']
+    }
 )

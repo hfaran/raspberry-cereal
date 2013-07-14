@@ -1,1 +1,1 @@
-CONFIG_PATH = 'raspberry_cereal.cfg'
+CONFIG_PATH = '/etc/raspberry_cereal.cfg'
