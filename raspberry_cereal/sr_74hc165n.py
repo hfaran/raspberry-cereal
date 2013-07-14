@@ -23,6 +23,11 @@ def gpio_setup():
             config.get('74HC165N',
             'triggerpulsewidth')
         )
+    sr_config['bus_width'] = int(config.get('RASPBERRY_CEREAL', 'bus_width'))
+    sr_config['shift_registers'] = int(config.get(
+            'RASPBERRY_CEREAL'),
+            'shift_registers'
+        )
 
     GPIO.setmode(eval(config.get('GPIO', 'setmode')))
     GPIO.setwarnings(eval(config.get('GPIO', 'setwarnings')))
@@ -35,11 +40,7 @@ def gpio_setup():
 
     return sr_config
 
-def iread(pin):
-    """Returns pin value as an int"""
-    return int(GPIO.input(pin))
-
-def read_shift_reg(sr_config):
+def read_shift_regs(sr_config):
     """Reads serial data from shift register"""
     bit_val = 0
     serial_input = []
@@ -48,8 +49,8 @@ def read_shift_reg(sr_config):
     sleep(sr_config['triggerpulsewidth'])
     GPIO.output(sr_config['ploadpin'], 1)
 
-    for i in range(8):
-        serial_input.append(iread(sr_config['datapin']))
+    for i in range(sr_config['bus_width']*sr_config['shift_registers']):
+        serial_input.append(int(GPIO.input(sr_config['datapin'])))
         GPIO.output(sr_config['clockpin'], 1)
         sleep(sr_config['triggerpulsewidth'])
         GPIO.output(sr_config['clockpin'], 0)
