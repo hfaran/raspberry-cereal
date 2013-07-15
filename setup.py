@@ -1,8 +1,11 @@
 from setuptools import setup
-from raspberry_cereal.constants import CONFIG_PATH
+from raspberry_cereal.constants import CONFIG_PATH, CONFIG_DIR
 import os
 import shutil
 
+# Make sure path exists
+if not os.path.exists(CONFIG_DIR):
+    os.makedirs(CONFIG_PATH)
 # Backup existing config file
 if os.path.exists(CONFIG_PATH):
     moved = False
