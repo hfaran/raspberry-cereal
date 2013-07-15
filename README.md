@@ -5,6 +5,8 @@ A dash of RPi.GPIO and a sprinkle of python-uinput make for something that maps 
 
 Setup
 -----
+*Python 2.7 is required and the only version that raspberry-cereal is compatible with.*
+
 The following commands should take you to victory!
 - 1) Firstly, you need to make sure the uinput kernel module is enabled.
 
