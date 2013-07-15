@@ -7,6 +7,7 @@ from ConfigParser import ConfigParser
 from raspberry_cereal.constants import CONFIG_PATH
 from time import sleep
 
+
 def gpio_setup():
     """Performs GPIO setup
 
@@ -20,14 +21,14 @@ def gpio_setup():
     sr_config['datapin'] = int(config.get('74HC165N', 'datapin'))
     sr_config['clockpin'] = int(config.get('74HC165N', 'clockpin'))
     sr_config['triggerpulsewidth'] = eval(
-            config.get('74HC165N',
-            'triggerpulsewidth')
+        config.get('74HC165N',
+                   'triggerpulsewidth')
         )
     sr_config['bus_width'] = int(config.get('RASPBERRY_CEREAL', 'bus_width'))
     sr_config['shift_registers'] = int(config.get(
-            'RASPBERRY_CEREAL',
-            'shift_registers'
-        )      
+        'RASPBERRY_CEREAL',
+        'shift_registers'
+        )
     )
 
     GPIO.setmode(eval(config.get('GPIO', 'setmode')))
@@ -40,6 +41,7 @@ def gpio_setup():
     GPIO.output(sr_config['ploadpin'], 1)
 
     return sr_config
+
 
 def read_shift_regs(sr_config):
     """Reads serial data from shift register"""
