@@ -14,6 +14,8 @@ from raspberry_cereal.validate_cfg import main as validate_config
 
 def main():
     """Polls shift register for serial data and emit_clicks HIGHs"""
+    if os.geteuid() != 0:
+        exit("Must be run as root!")
     print "[WAIT] Setting up..."
     # Validate config
     validate_config()
