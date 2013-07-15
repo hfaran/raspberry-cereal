@@ -20,7 +20,14 @@ def main():
     # Read config file
     config = ConfigParser()
     config.read(CONFIG_PATH)
-    POLL_TIME = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
+    # Set poll time
+    if eval(config.get('RASPBERRY_CEREAL', 'autocalculate_poll_time')) == True:
+        poll_time = eval(config.get('RASPBERRY_CEREAL', 'bus_width')) * \
+                    eval(config.get('RASPBERRY_CEREAL', 'shift_registers')) / \
+                    BHZ_PER_CPU_PERCENT
+        print "[OK] Poll time calculated: {} ms".format(poll_time*1000)
+    else:
+        poll_time = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
     # Create device
     events = []
     for key in config.options('KEY2BIT_MAP'):
@@ -35,10 +42,10 @@ def main():
            " the job when you are done. Polling every {2} ms.".format(
                 "raspberry-cereal",
                 "'sudo raspberry-cereal &'",
-                int(POLL_TIME*1000)
+                int(poll_time*1000)
             )
         )
-    # Poll every POLL_TIME seconds. About 1.6ms per poll for 8 keys
+    # Poll every poll_time seconds. About 1.6ms per poll for 8 keys
     while(True):
         serial_input = read_shift_regs(sr_config)
         for bit in enumerate(serial_input):
@@ -50,4 +57,4 @@ def main():
                         )
                     )
                 )
-        time.sleep(POLL_TIME)
+        time.sleep(poll_time)

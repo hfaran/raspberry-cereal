@@ -28,7 +28,7 @@ setup(
         'RPi.GPIO',
         'python-uinput'
     ],
-    data_files = [('/etc/', ['config/raspberry_cereal.cfg'])],
+    data_files = [('/etc/raspberry-cereal/', ['config/raspberry_cereal.cfg'])],
     entry_points = {
         'console_scripts': ['raspberry-cereal = raspberry_cereal:main']
     }
