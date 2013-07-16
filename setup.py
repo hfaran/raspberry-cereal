@@ -22,10 +22,7 @@ setup(
     version='0.3',
     author='Hamza Faran',
     author_email='hamza@hfaran.com',
-    description=('A dash of RPi.GPIO and a'
-                 'sprinkle of python-uinput make for'
-                 'something that maps serial inputs to'
-                 'key presses'),
+    description=('Serial GPIO-to-USB utility for Raspberry Pi'),
     packages=['raspberry_cereal'],
     install_requires = [
         'RPi.GPIO',
