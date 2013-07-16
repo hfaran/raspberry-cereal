@@ -5,13 +5,28 @@ import shutil
 
 # Make sure path exists
 if not os.path.exists(CONFIG_DIR):
-    os.makedirs(CONFIG_PATH)
+    os.makedirs(CONFIG_DIR)
 # Backup existing config file
 if os.path.exists(CONFIG_PATH):
+    print ("[WARNING] Existing config file found. Would you like to "
+           "keep the existing file, or replace it with a new one? "
+           "The existing file may not be backwards-compatible.")
+    response = None
+    while response != "keep" and response != "replace":
+        response = raw_input("keep or replace?")
+
+if response == "replace":
     moved = False
     i = 0
     while not moved:
         if not os.path.exists(CONFIG_PATH+'.bak'+str(i)):
+            print ("[WARNING] Existing config file will be backed up "
+                   "as {} and replaced with the new file from the "
+                   "repository.".format(
+                        CONFIG_PATH+'.bak'+str(i)
+                    ))
+            if raw_input("continue? (y/n)") != "y":
+                exit("Quitting; no changes made.")
             shutil.move(CONFIG_PATH, CONFIG_PATH+'.bak'+str(i))
             moved = True
         else:
