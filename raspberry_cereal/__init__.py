@@ -77,11 +77,12 @@ def main():
                 print serial_input
             else:
                 for bit in enumerate(serial_input):
-                   if not bit[1]:
-                       device.emit_click(
-                           eval(
-                               "uinput.{}".format(
-                                   bit2key_map[str(bit[0])].upper())))
+                   #if not bit[1]:
+                   device.emit(
+                       eval(
+                           "uinput.{}".format(
+                               bit2key_map[str(bit[0])].upper())),
+                       int(not bit[1]))
             time.sleep(poll_time)
         except KeyboardInterrupt:
           exit("[OK] raspberry-cereal bids you adieu.")
