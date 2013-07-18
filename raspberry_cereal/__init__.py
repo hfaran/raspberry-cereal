@@ -41,8 +41,8 @@ def main():
     if eval(config.get('RASPBERRY_CEREAL', 'autocalculate_poll_time')):
         poll_time = eval(config.get('RASPBERRY_CEREAL', 'bus_width')) * \
             eval(config.get('RASPBERRY_CEREAL', 'shift_registers')) / \
-            BHZ_PER_CPU_PERCENT / eval(config.get('RASPBERRY_CEREAL'), \
-            'approx_cpu_usage_limit')
+            BHZ_PER_CPU_PERCENT / eval(config.get('RASPBERRY_CEREAL', \
+            'approx_cpu_usage_limit'))
         print "[OK] Poll time calculated: {} ms".format(poll_time*1000)
     else:
         poll_time = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
@@ -51,7 +51,7 @@ def main():
     for key in config.options('KEY2BIT_MAP'):
         events.append(eval("uinput.{}".format(key.upper())))
     device = CustomDevice(events)
-    print "[OK] Config validated; looks good."
+    print "[OK] Configuration options type-validated."
     # Setup GPIO, create inverse pin/key dict
     sr_config = gpio_setup()
     bit2key_map = {config.get('KEY2BIT_MAP', option): option
@@ -62,24 +62,27 @@ def main():
                "raspberry-cereal",
                "'sudo raspberry-cereal &'",
                int(poll_time*1000)))
-    # Poll every poll_time seconds. About 1.6ms per poll for 8 keys
-    while(True):
-        serial_input = read_shift_regs(sr_config)
-        if eval(config.get('RASPBERRY_CEREAL', "enable_repeat")):
-            repeat = eval(config.get('RASPBERRY_CEREAL', 'repeat'))
-            for i in range(repeat):
-                for input in enumerate(read_shift_regs(sr_config)):
-                    serial_input[input[0]] += input[1]
-            serial_input = [int(round(input/float(repeat+1))) for input in serial_input]
 
-        if args.debug:
-            print serial_input
-        else:
-            for bit in enumerate(serial_input):
-               if not bit[1]:
-                   device.emit_click(
-                       eval(
-                           "uinput.{}".format(
-                               bit2key_map[str(bit[0])].upper())))
-        time.sleep(poll_time)
+    while(True):
+        try:
+            serial_input = read_shift_regs(sr_config)
+            if eval(config.get('RASPBERRY_CEREAL', "enable_repeat")):
+                repeat = eval(config.get('RASPBERRY_CEREAL', 'repeat'))
+                for i in range(repeat):
+                    for input in enumerate(read_shift_regs(sr_config)):
+                        serial_input[input[0]] += input[1]
+                serial_input = [int(round(input/float(repeat+1))) for input in serial_input]
+
+            if args.debug:
+                print serial_input
+            else:
+                for bit in enumerate(serial_input):
+                   if not bit[1]:
+                       device.emit_click(
+                           eval(
+                               "uinput.{}".format(
+                                   bit2key_map[str(bit[0])].upper())))
+            time.sleep(poll_time)
+        except KeyboardInterrupt:
+          exit("[OK] raspberry-cereal bids you adieu.")
 
