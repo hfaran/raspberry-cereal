@@ -3,13 +3,14 @@ and maps it to any device input you want possible with uinput. Read the
 README for details!
 """
 
+import os
 import uinput
 import time
 from ConfigParser import ConfigParser
 
 from raspberry_cereal.custom_device import CustomDevice
 from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_regs
-from raspberry_cereal.constants import CONFIG_PATH
+from raspberry_cereal.constants import CONFIG_PATH, BHZ_PER_CPU_PERCENT
 from raspberry_cereal.validate_cfg import main as validate_config
 
 
@@ -49,11 +50,18 @@ def main():
                int(poll_time*1000)))
     # Poll every poll_time seconds. About 1.6ms per poll for 8 keys
     while(True):
+        number = 0
         serial_input = read_shift_regs(sr_config)
-        for bit in enumerate(serial_input):
-            if bit[1]:
-                device.emit_click(
-                    eval(
-                        "uinput.{}".format(
-                            bit2key_map[str(bit[0])].upper())))
+        for i in range(number):
+            for input in enumerate(read_shift_regs(sr_config)):
+                serial_input[input[0]] += input[1]
+        serial_input = [int(round(input/float(number+1))) for input in serial_input]
+        
+        print serial_input
+        #for bit in enumerate(serial_input):
+         #   if not bit[1]:
+          #      device.emit_click(
+           #         eval(
+            #            "uinput.{}".format(
+             #               bit2key_map[str(bit[0])].upper())))
         time.sleep(poll_time)

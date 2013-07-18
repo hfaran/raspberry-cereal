@@ -24,12 +24,15 @@ def main():
                         config.get(section, 'type_'+option),
                         str(type(eval(
                             config.get(section, option))))))
-
-    assert sorted(
-        [int(config.get('KEY2BIT_MAP', option)) for option in
-            config.options('KEY2BIT_MAP')]
-    ) == range(int(config.get(
+    print config.options('KEY2BIT_MAP')
+    actual = sorted([int(config.get('KEY2BIT_MAP', option)) for option in
+            config.options('KEY2BIT_MAP')])
+    expected = range(int(config.get(
         'RASPBERRY_CEREAL', 'bus_width'))*int(config.get(
-        'RASPBERRY_CEREAL', 'shift_registers'))), \
+        'RASPBERRY_CEREAL', 'shift_registers')))
+    assert actual == expected, \
         ("KEY2BIT_MAP does not have items matching specification from"
-         " bus_width and shift_registers.")
+         " bus_width and shift_registers.\nactual: {}\nexpected: {}".format(
+            actual,
+            expected))
+
