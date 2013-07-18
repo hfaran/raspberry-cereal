@@ -37,6 +37,8 @@ def main():
     # Read config file
     config = ConfigParser()
     config.read(CONFIG_PATH)
+    #
+    ACTIVE_LOW = eval(config.get('RASPBERRY_CEREAL', 'active_low'))
     # Set poll time
     if eval(config.get('RASPBERRY_CEREAL', 'autocalculate_poll_time')):
         poll_time = eval(config.get('RASPBERRY_CEREAL', 'bus_width')) * \
@@ -63,8 +65,8 @@ def main():
                "'sudo raspberry-cereal &'",
                int(poll_time*1000)))
 
-    old_input = [1 for i in range(eval(config.get('RASPBERRY_CEREAL', \
-        'bus_width')) * eval(config.get('RASPBERRY_CEREAL', \
+    old_input = [int(ACTIVE_LOW) for i in range(eval(config.get( \
+        'RASPBERRY_CEREAL', 'bus_width')) * eval(config.get('RASPBERRY_CEREAL', \
         'shift_registers')))]
     while(True):
         try:
@@ -73,7 +75,7 @@ def main():
                 print serial_input
             else:
                 for bit in enumerate(serial_input):
-                   if bit[1] == 0 and old_input[bit[0]] == 1:
+                   if bit[1] == int(not ACTIVE_LOW) and old_input[bit[0]] == int(ACTIVE_LOW):
                        device.emit_click(
                            eval(
                                "uinput.{}".format(
