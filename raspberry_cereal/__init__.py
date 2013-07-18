@@ -63,6 +63,9 @@ def main():
                "'sudo raspberry-cereal &'",
                int(poll_time*1000)))
 
+    old_input = [1 for i in range(eval(config.get('RASPBERRY_CEREAL', \
+        'bus_width')) * eval(config.get('RASPBERRY_CEREAL', \
+        'shift_registers')))]
     while(True):
         try:
             serial_input = read_shift_regs(sr_config)
@@ -77,13 +80,13 @@ def main():
                 print serial_input
             else:
                 for bit in enumerate(serial_input):
-                   #if not bit[1]:
-                   device.emit(
-                       eval(
-                           "uinput.{}".format(
-                               bit2key_map[str(bit[0])].upper())),
-                       int(not bit[1]))
+                   if bit[1] == 0 and old_input[bit[0]] == 1:
+                       device.emit_click(
+                           eval(
+                               "uinput.{}".format(
+                                   bit2key_map[str(bit[0])].upper())))
             time.sleep(poll_time)
+            old_input = serial_input
         except KeyboardInterrupt:
           exit("[OK] raspberry-cereal bids you adieu.")
 
