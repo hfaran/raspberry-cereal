@@ -62,15 +62,7 @@ def main():
                "'sudo raspberry-cereal &'",
                int(poll_time*1000)))
     # Poll every poll_time seconds. About 1.6ms per poll for 8 keys
-    while(True):
-<<<<<<< HEAD
-        repeat = eval(config.get('RASPBERRY_CEREAL', 'repeat'))
-        serial_input = read_shift_regs(sr_config)
-        for i in range(repeat):
-            for input in enumerate(read_shift_regs(sr_config)):
-                serial_input[input[0]] += input[1]
-        serial_input = [int(round(input/float(repeat+1))) for input in serial_input]
-=======
+    while(True): 
         serial_input = read_shift_regs(sr_config)
         if eval(config.get('RASPBERRY_CEREAL', "enable_repeat")):
             repeat = eval(config.get('RASPBERRY_CEREAL', 'repeat'))
@@ -78,7 +70,6 @@ def main():
                 for input in enumerate(read_shift_regs(sr_config)):
                     serial_input[input[0]] += input[1]
             serial_input = [int(round(input/float(repeat+1))) for input in serial_input]
->>>>>>> 48ea2ba375bc46e48dcb1944286b2680578ad678
 
         if args.debug:
             print serial_input
