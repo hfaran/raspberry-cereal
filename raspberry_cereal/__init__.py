@@ -69,13 +69,6 @@ def main():
     while(True):
         try:
             serial_input = read_shift_regs(sr_config)
-            if eval(config.get('RASPBERRY_CEREAL', "enable_repeat")):
-                repeat = eval(config.get('RASPBERRY_CEREAL', 'repeat'))
-                for i in range(repeat):
-                    for input in enumerate(read_shift_regs(sr_config)):
-                        serial_input[input[0]] += input[1]
-                serial_input = [int(round(input/float(repeat+1))) for input in serial_input]
-
             if args.debug:
                 print serial_input
             else:
