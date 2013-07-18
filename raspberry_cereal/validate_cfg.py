@@ -24,7 +24,6 @@ def main():
                         config.get(section, 'type_'+option),
                         str(type(eval(
                             config.get(section, option))))))
-    print config.options('KEY2BIT_MAP')
     actual = sorted([int(config.get('KEY2BIT_MAP', option)) for option in
             config.options('KEY2BIT_MAP')])
     expected = range(int(config.get(

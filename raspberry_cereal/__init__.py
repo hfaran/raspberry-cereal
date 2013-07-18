@@ -41,7 +41,8 @@ def main():
     if eval(config.get('RASPBERRY_CEREAL', 'autocalculate_poll_time')):
         poll_time = eval(config.get('RASPBERRY_CEREAL', 'bus_width')) * \
             eval(config.get('RASPBERRY_CEREAL', 'shift_registers')) / \
-            BHZ_PER_CPU_PERCENT
+            BHZ_PER_CPU_PERCENT / eval(config.get('RASPBERRY_CEREAL'), \
+            'approx_cpu_usage_limit')
         print "[OK] Poll time calculated: {} ms".format(poll_time*1000)
     else:
         poll_time = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
@@ -62,7 +63,7 @@ def main():
                "'sudo raspberry-cereal &'",
                int(poll_time*1000)))
     # Poll every poll_time seconds. About 1.6ms per poll for 8 keys
-    while(True): 
+    while(True):
         serial_input = read_shift_regs(sr_config)
         if eval(config.get('RASPBERRY_CEREAL', "enable_repeat")):
             repeat = eval(config.get('RASPBERRY_CEREAL', 'repeat'))
