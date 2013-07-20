@@ -34,7 +34,7 @@ if response == "replace":
 
 setup(
     name="raspberry-cereal",
-    version='0.8',
+    version='1.0',
     author='Hamza Faran',
     author_email='hamza@hfaran.com',
     description=('Serial GPIO-to-USB utility for Raspberry Pi'),

@@ -9,7 +9,7 @@ def main():
     config.read(CONFIG_PATH)
 
     for section in filter(
-        lambda s: s != 'KEY2BIT_MAP',
+        lambda s: s != 'BIT2KEY_MAP',
         config.sections()
     ):
         for option in filter(
@@ -24,8 +24,7 @@ def main():
                         config.get(section, 'type_'+option),
                         str(type(eval(
                             config.get(section, option))))))
-    actual = sorted([int(config.get('KEY2BIT_MAP', option)) for option in
-            config.options('KEY2BIT_MAP')])
+    actual = sorted([int(option) for option in config.options('BIT2KEY_MAP')])
     expected = range(int(config.get(
         'RASPBERRY_CEREAL', 'bus_width'))*int(config.get(
         'RASPBERRY_CEREAL', 'shift_registers')))
