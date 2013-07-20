@@ -19,7 +19,6 @@ ARGS = {
     "Enables debug mode",
     ],
 }
-ACTIVE_LOW = True
 
 def main():
     """Polls shift register for serial data and emit_clicks HIGHs"""
@@ -38,7 +37,6 @@ def main():
     config = ConfigParser()
     config.read(CONFIG_PATH)
     #
-    global ACTIVE_LOW
     ACTIVE_LOW = eval(config.get('RASPBERRY_CEREAL', 'active_low'))
     # Create device
     events = []
@@ -51,12 +49,7 @@ def main():
     # Setup GPIO
     sr_config = gpio_setup()
     # Set poll time
-    if eval(config.get('RASPBERRY_CEREAL', 'autocalculate_poll_time')):
-        print "Calculating poll time . . ."
-        poll_time = test(sr_config, device, config, 1000)
-        print "[OK] Poll time calculated: {} ms".format(poll_time*1000)
-    else:
-        poll_time = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
+    poll_time = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
 
     print ("[OK] If you opened {0} with {1}, you may safely hit Ctrl-C and"
            " {0} will continue to run in the background. Remember to kill"
@@ -71,26 +64,15 @@ def main():
             if args.debug:
                 print serial_input
             else:
-                emit_key(serial_input, config, device)
+                for bit in enumerate(serial_input):
+                key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
+                if key != "NONE":
+                    if bit[1] == int(not ACTIVE_LOW):
+                        device.emit(
+                            eval("uinput.{}".format(key)), 1)
+                    else:
+                        device.emit(
+                            eval("uinput.{}".format(key)), 0)
             time.sleep(poll_time)
         except KeyboardInterrupt:
           exit("[OK] raspberry-cereal bids you adieu.")
-
-def test(sr_config, device, config, RUNS):
-    """Times RUNS runs and returns poll_time based on the specified"""
-    start = time.time()
-    for i in range(RUNS):
-        serial_input = read_shift_regs(sr_config)
-        device.emit(uinput.KEY_UNKNOWN, 0)
-    return 2.1/((float(RUNS)/(time.time() - start))*(eval(config.get('RASPBERRY_CEREAL', 'approx_cpu_usage_limit'))/100.0))
-
-def emit_key(serial_input, config, device):
-    for bit in enumerate(serial_input):
-        key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
-        if key != "NONE":
-            if bit[1] == int(not ACTIVE_LOW):
-                device.emit(
-                    eval("uinput.{}".format(key)), 1)
-            else:
-                device.emit(
-                    eval("uinput.{}".format(key)), 0)
