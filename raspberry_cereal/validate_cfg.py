@@ -9,7 +9,7 @@ def main():
     config.read(CONFIG_PATH)
 
     for section in filter(
-        lambda s: s != 'KEY2BIT_MAP',
+        lambda s: s != 'BIT2KEY_MAP',
         config.sections()
     ):
         for option in filter(

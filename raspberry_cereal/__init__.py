@@ -19,6 +19,7 @@ ARGS = {
     "Enables debug mode",
     ],
 }
+ACTIVE_LOW = True
 
 def main():
     """Polls shift register for serial data and emit_clicks HIGHs"""
@@ -37,6 +38,7 @@ def main():
     config = ConfigParser()
     config.read(CONFIG_PATH)
     #
+    global ACTIVE_LOW
     ACTIVE_LOW = eval(config.get('RASPBERRY_CEREAL', 'active_low'))
     # Create device
     events = []
@@ -50,7 +52,8 @@ def main():
     sr_config = gpio_setup()
     # Set poll time
     if eval(config.get('RASPBERRY_CEREAL', 'autocalculate_poll_time')):
-        poll_time = test(sr_config, device, 10000)
+        print "Calculating poll time . . ."
+        poll_time = test(sr_config, device, config, 1000)
         print "[OK] Poll time calculated: {} ms".format(poll_time*1000)
     else:
         poll_time = float(config.get('RASPBERRY_CEREAL', 'poll_time'))
@@ -73,13 +76,13 @@ def main():
         except KeyboardInterrupt:
           exit("[OK] raspberry-cereal bids you adieu.")
 
-def test(sr_config, device, RUNS):
+def test(sr_config, device, config, RUNS):
     """Times RUNS runs and returns poll_time based on the specified"""
     start = time.time()
     for i in range(RUNS):
         serial_input = read_shift_regs(sr_config)
         device.emit(uinput.KEY_UNKNOWN, 0)
-    return (float(RUNS)/(time.time() - start))*(eval(config.get('RASPBERRY_CEREAL', 'approx_cpu_usage_limit'))/100.0)
+    return 2.1/((float(RUNS)/(time.time() - start))*(eval(config.get('RASPBERRY_CEREAL', 'approx_cpu_usage_limit'))/100.0))
 
 def emit_key(serial_input, config, device):
     for bit in enumerate(serial_input):
