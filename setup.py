@@ -3,7 +3,6 @@ from raspberry_cereal.constants import CONFIG_PATH, CONFIG_DIR
 import os
 import shutil
 
-response = None
 # Make sure path exists
 if not os.path.exists(CONFIG_DIR):
     os.makedirs(CONFIG_DIR)
@@ -12,8 +11,11 @@ if os.path.exists(CONFIG_PATH):
     print ("[WARNING] Existing config file found. Would you like to "
            "keep the existing file, or replace it with a new one? "
            "The existing file may not be backwards-compatible.")
+    response = raw_input("keep or replace?")
     while response != "keep" and response != "replace":
         response = raw_input("keep or replace?")
+else:
+    response = "insert_new"
 
 if response == "replace":
     moved = False
@@ -43,7 +45,8 @@ setup(
         'RPi.GPIO',
         'python-uinput'
     ],
-    data_files=[(CONFIG_DIR, ['config/raspberry_cereal.cfg'])],
+    data_files=[(CONFIG_DIR, ['config/raspberry_cereal.cfg'] \
+        if response in ["replace", "insert_new"] else [])],
     entry_points={
         'console_scripts': ['raspberry-cereal = raspberry_cereal:main']
     }
