@@ -8,6 +8,7 @@ import uinput
 import time
 from ConfigParser import ConfigParser
 import argparse
+from ast import literal_eval as safe_eval
 
 from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_regs
 from raspberry_cereal.constants import CONFIG_PATH, BHZ_PER_CPU_PERCENT
@@ -38,13 +39,13 @@ def main():
     config = ConfigParser()
     config.read(CONFIG_PATH)
     #
-    ACTIVE_LOW = eval(config.get('RASPBERRY_CEREAL', 'active_low'))
+    ACTIVE_LOW = safe_eval(config.get('RASPBERRY_CEREAL', 'active_low'))
     # Create device
     events = []
     for key in [config.get('BIT2KEY_MAP', num)
                 for num in config.options('BIT2KEY_MAP')
                 if config.get('BIT2KEY_MAP', num) != "NONE"]:
-        events.append(eval("uinput.{}".format(key.upper())))
+        events.append(getattr(uinput, key.upper()))
     device = uinput.Device(events)
     print "[OK] Configuration options type-validated."
     # Setup GPIO
@@ -66,14 +67,14 @@ def main():
                 print serial_input
             else:
                 for bit in enumerate(serial_input):
-                    key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
+                key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
                     if key != "NONE":
                         if bit[1] == int(not ACTIVE_LOW):
                             device.emit(
-                                eval("uinput.{}".format(key)), 1)
+                                getattr(uinput, key), 1)
                         else:
                             device.emit(
-                                eval("uinput.{}".format(key)), 0)
+                                getattr(uinput, key), 0)
             time.sleep(poll_time)
         except KeyboardInterrupt:
             exit("[OK] raspberry-cereal bids you adieu.")
