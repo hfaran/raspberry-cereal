@@ -10,14 +10,14 @@ from ConfigParser import ConfigParser
 import argparse
 from ast import literal_eval as safe_eval
 
-from raspberry_cereal.sr_74hc165n import gpio_setup, read_shift_regs
-from raspberry_cereal.constants import CONFIG_PATH, BHZ_PER_CPU_PERCENT
+from raspberry_cereal.sr_74hc165n import gpio_setup, main_loop
+from raspberry_cereal.constants import CONFIG_PATH
 from raspberry_cereal.validate_cfg import main as validate_config
 
 ARGS = {
     "debug": [
         ("--debug", "-D"),
-        "Enables debug mode",
+        "Enables debug mode",  # No debug mode for performance
     ],
 }
 
@@ -39,7 +39,7 @@ def main():
     config = ConfigParser()
     config.read(CONFIG_PATH)
     #
-    ACTIVE_LOW = safe_eval(config.get('RASPBERRY_CEREAL', 'active_low'))
+    active_low = safe_eval(config.get('RASPBERRY_CEREAL', 'active_low'))
     # Create device
     events = []
     for key in [config.get('BIT2KEY_MAP', num)
@@ -60,21 +60,9 @@ def main():
                "'sudo raspberry-cereal &'",
                int(poll_time * 1000)))
 
-    while(True):
-        try:
-            serial_input = read_shift_regs(sr_config)
-            if args.debug:
-                print serial_input
-            else:
-                for bit in enumerate(serial_input):
-                key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
-                    if key != "NONE":
-                        if bit[1] == int(not ACTIVE_LOW):
-                            device.emit(
-                                getattr(uinput, key), 1)
-                        else:
-                            device.emit(
-                                getattr(uinput, key), 0)
-            time.sleep(poll_time)
-        except KeyboardInterrupt:
-            exit("[OK] raspberry-cereal bids you adieu.")
+    # PERFORMANCE: Moved main_loop so that there are no longer
+    # two loops.
+    try:
+        main_loop(sr_config, active_low, poll_time)
+    except KeyboardInterrupt:
+        exit("[OK] raspberry-cereal bids you adieu.")
