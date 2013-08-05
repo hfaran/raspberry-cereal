@@ -14,11 +14,12 @@ from raspberry_cereal.constants import CONFIG_PATH, BHZ_PER_CPU_PERCENT
 from raspberry_cereal.validate_cfg import main as validate_config
 
 ARGS = {
-  "debug": [
-    ("--debug", "-D"),
-    "Enables debug mode",
+    "debug": [
+        ("--debug", "-D"),
+        "Enables debug mode",
     ],
 }
+
 
 def main():
     """Polls shift register for serial data and emit_clicks HIGHs"""
@@ -29,7 +30,7 @@ def main():
     parser = argparse.ArgumentParser()
     for arg in ARGS.keys():
         parser.add_argument(*ARGS[arg][0], dest=arg, action='store_true',
-            help=ARGS[arg][1])
+                            help=ARGS[arg][1])
     args = parser.parse_args()
     # Validate config
     validate_config()
@@ -40,9 +41,9 @@ def main():
     ACTIVE_LOW = eval(config.get('RASPBERRY_CEREAL', 'active_low'))
     # Create device
     events = []
-    for key in [config.get('BIT2KEY_MAP', num) \
-            for num in config.options('BIT2KEY_MAP') \
-            if config.get('BIT2KEY_MAP', num) != "NONE"]:
+    for key in [config.get('BIT2KEY_MAP', num)
+                for num in config.options('BIT2KEY_MAP')
+                if config.get('BIT2KEY_MAP', num) != "NONE"]:
         events.append(eval("uinput.{}".format(key.upper())))
     device = uinput.Device(events)
     print "[OK] Configuration options type-validated."
@@ -56,7 +57,7 @@ def main():
            " the job when you are done. Polling every {2} ms.".format(
                "raspberry-cereal",
                "'sudo raspberry-cereal &'",
-               int(poll_time*1000)))
+               int(poll_time * 1000)))
 
     while(True):
         try:
@@ -65,14 +66,14 @@ def main():
                 print serial_input
             else:
                 for bit in enumerate(serial_input):
-                key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
-                if key != "NONE":
-                    if bit[1] == int(not ACTIVE_LOW):
-                        device.emit(
-                            eval("uinput.{}".format(key)), 1)
-                    else:
-                        device.emit(
-                            eval("uinput.{}".format(key)), 0)
+                    key = config.get('BIT2KEY_MAP', str(bit[0])).upper()
+                    if key != "NONE":
+                        if bit[1] == int(not ACTIVE_LOW):
+                            device.emit(
+                                eval("uinput.{}".format(key)), 1)
+                        else:
+                            device.emit(
+                                eval("uinput.{}".format(key)), 0)
             time.sleep(poll_time)
         except KeyboardInterrupt:
-          exit("[OK] raspberry-cereal bids you adieu.")
+            exit("[OK] raspberry-cereal bids you adieu.")
