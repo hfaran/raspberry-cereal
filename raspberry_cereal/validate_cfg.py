@@ -31,7 +31,7 @@ def main():
                     ", got {} instead.".format(
                         option,
                         config.get(section, 'type_' + option),
-                        str(type(eval(
+                        str(type(safe_eval(
                             config.get(section, option))))))
 
     # Validate keymap length

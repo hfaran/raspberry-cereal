@@ -16,8 +16,8 @@ from raspberry_cereal.validate_cfg import main as validate_config
 
 ARGS = {
     "debug": [
-        ("--debug", "-D"),
-        "Enables debug mode",  # No debug mode for performance
+        ("--debug", "-D",),
+        "Enables debug mode",
     ],
 }
 
@@ -39,7 +39,7 @@ def main():
     config = ConfigParser()
     config.read(CONFIG_PATH)
     #
-    active_low = safe_eval(config.get('RASPBERRY_CEREAL', 'active_low'))
+    active_low = int(safe_eval(config.get('RASPBERRY_CEREAL', 'active_low')))
     # Create device
     events = []
     for key in [config.get('BIT2KEY_MAP', num)
@@ -63,6 +63,6 @@ def main():
     # PERFORMANCE: Moved main_loop so that there are no longer
     # two loops.
     try:
-        main_loop(sr_config, active_low, poll_time)
+        main_loop(sr_config, active_low, poll_time, device, config, args)
     except KeyboardInterrupt:
         exit("[OK] raspberry-cereal bids you adieu.")

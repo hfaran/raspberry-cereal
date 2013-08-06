@@ -50,30 +50,46 @@ def gpio_setup():
     return sr_config
 
 
-def main_loop(sr_config, active_low, poll_time):
+def main_loop(sr_config, active_low, poll_time, device, config, args):
     """Reads serial data from shift register"""
+    # PERFORMANCE: Move all data from sr_config to locals
+    ploadpin = sr_config['ploadpin']
+    triggerpulsewidth = sr_config['triggerpulsewidth']
+    full_width = sr_config['full_width']
+    datapin = sr_config['datapin']
+    clockpin = sr_config['clockpin']
+
     while True:
-        GPIO.output(sr_config['ploadpin'], 0)
-        sleep(sr_config['triggerpulsewidth'])
-        GPIO.output(sr_config['ploadpin'], 1)
+        GPIO.output(ploadpin, 0)
+        sleep(triggerpulsewidth)
+        GPIO.output(ploadpin, 1)
+
+        # Uncomment for debug mode, commented out for performance
+        # if args.debug:
+        #     print "\n"
 
         # PERFORMANCE: Use xrange instead of range
-        for i in xrange(sr_config['full_width']):
+        for i in xrange(full_width):
             # PERFORMANCE: Removed unnecessary int coersion
-            res = GPIO.input(sr_config['datapin'])
-            GPIO.output(sr_config['clockpin'], 1)
-            sleep(sr_config['triggerpulsewidth'])
-            GPIO.output(sr_config['clockpin'], 0)
+            res = GPIO.input(datapin)
+            GPIO.output(clockpin, 1)
+            sleep(triggerpulsewidth)
+            GPIO.output(clockpin, 0)
+
+            # Uncomment for debug mode
+            # if args.debug:
+            #     print "{}, ".format(res)
+            #     continue
 
             # PERFORMANCE: Key mapping done while reading
             # is happening instead of in separate loop
             key = config.get('BIT2KEY_MAP', str(i)).upper()
             if key != "NONE":
-                if res == int(not active_low):
+                if res != active_low:
                     device.emit(
                         getattr(uinput, key), 1)
                 else:
                     device.emit(
                         getattr(uinput, key), 0)
 
-        time.sleep(poll_time)
+        sleep(poll_time)
