@@ -20,7 +20,7 @@ The following commands should take you to victory!
 
 	$ ```sudo apt-get install lidudev-dev```
 
-- 4) And finally, we run setup. [IMPORTANT: setup.py will overwrite your existing config file, if you have one, so make sure to backup.]
+- 4) And finally, we run setup.
 
 	$ ```sudo python setup.py install```
 
