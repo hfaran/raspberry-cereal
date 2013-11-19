@@ -7,7 +7,7 @@ Setup
 -----
 *Python 2.7 is required and the only version that raspberry-cereal is compatible with.*
 
-The following commands should take you to victory!
+The following commands should take you to victory! Alternatively you can simply run `./install.bash` which will do all of the following for you.
 - 1) Firstly, you need to make sure the uinput kernel module is enabled.
 
 	```$ sudo modprobe uinput```
