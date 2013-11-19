@@ -12,7 +12,7 @@ if os.path.exists(CONFIG_PATH):
            "keep the existing file, or replace it with a new one? "
            "The existing file may not be backwards-compatible.")
     response = raw_input("keep or replace?")
-    while response != "keep" and response != "replace":
+    while response not in ["keep", "replace"]:
         response = raw_input("keep or replace?")
 else:
     response = "insert_new"
@@ -21,15 +21,15 @@ if response == "replace":
     moved = False
     i = 0
     while not moved:
-        if not os.path.exists(CONFIG_PATH+'.bak'+str(i)):
+        if not os.path.exists(CONFIG_PATH + '.bak' + str(i)):
             print ("[WARNING] Existing config file will be backed up "
                    "as {} and replaced with the new file from the "
                    "repository.".format(
-                        CONFIG_PATH+'.bak'+str(i)
-                    ))
+                       CONFIG_PATH + '.bak' + str(i)
+                   ))
             if raw_input("continue? (y/n)") != "y":
                 exit("Quitting; no changes made.")
-            shutil.move(CONFIG_PATH, CONFIG_PATH+'.bak'+str(i))
+            shutil.move(CONFIG_PATH, CONFIG_PATH + '.bak' + str(i))
             moved = True
         else:
             i += 1
@@ -45,8 +45,8 @@ setup(
         'RPi.GPIO',
         'python-uinput'
     ],
-    data_files=[(CONFIG_DIR, ['config/raspberry_cereal.cfg'] \
-        if response in ["replace", "insert_new"] else [])],
+    data_files=[(CONFIG_DIR, ['config/raspberry_cereal.cfg']
+                 if response in ["replace", "insert_new"] else [])],
     entry_points={
         'console_scripts': ['raspberry-cereal = raspberry_cereal:main']
     }
