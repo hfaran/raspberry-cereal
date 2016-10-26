@@ -7,7 +7,7 @@ if [ -z $(cat /etc/modules | grep uinput) ]
 then
     sudo sh -c 'echo uinput >> /etc/modules'
 fi
-# Install a dependency for python-uinput
-sudo apt-get install lidudev-dev
+# Install dependencies
+sudo apt-get install python-setuptools python-pip python-dev
 # Finally, run the installer
 sudo python setup.py install

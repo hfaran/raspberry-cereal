@@ -2,7 +2,6 @@ import RPi.GPIO as GPIO
 from ConfigParser import ConfigParser
 from ast import literal_eval as safe_eval
 import uinput
-import GPIO
 
 from raspberry_cereal.constants import CONFIG_PATH
 
@@ -22,9 +21,10 @@ def main():
             config.options(section)
         ):
             if "GPIO_attr" in config.get(section, 'type_' + option):
-                assert hasattr(GPIO, config.get(section, option)),
-                    ("Config validation failed. GPIO does not have "
-                     "attr {}.".format(GPIO, config.get(section, option)))
+                assert hasattr(GPIO, config.get(section, option)), (
+                    "Config validation failed. GPIO does not have "
+                    "attr {}.".format(GPIO, config.get(section, option))
+                )
             assert str(type(safe_eval(config.get(section, option)))) == \
                 "<type '{}'>".format(config.get(section, 'type_' + option)),\
                 ("Config validation failed. {} expected type was <type '{}'>"
